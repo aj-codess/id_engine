@@ -45,7 +45,7 @@ public:
     connections(boost::asio::io_context& io_ctx, domain end_p_url)
         : status(false), ioc(io_ctx), end_p_details(end_p_url), endpoint_resolver(io_ctx), con_acceptor(io_ctx) {
 
-        cout << "ready with      connection handler...." << endl;
+        cout << "ready with socket connection handler...." << endl;
 
     }
 
@@ -163,6 +163,7 @@ void connections::r_w_handler(std::shared_ptr<boost::asio::ip::tcp::socket> sock
             boost::beast::http::async_write(stream_socket,res,yield);
 
             stream_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_send);
+3
 
             };
 
@@ -179,6 +180,6 @@ void connections::r_w_handler(std::shared_ptr<boost::asio::ip::tcp::socket> sock
 
 void connection::request_handler(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body> res){
 
-
     
+
 }

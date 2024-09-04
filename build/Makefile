@@ -60,7 +60,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /home/aj/code/Berita/Beryl_id_engine
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/aj/code/Berita/Beryl_id_engine
+CMAKE_BINARY_DIR = /home/aj/code/Berita/Beryl_id_engine/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/aj/code/Berita/Beryl_id_engine/CMakeFiles /home/aj/code/Berita/Beryl_id_engine//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/aj/code/Berita/Beryl_id_engine/build/CMakeFiles /home/aj/code/Berita/Beryl_id_engine/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/aj/code/Berita/Beryl_id_engine/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/aj/code/Berita/Beryl_id_engine/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

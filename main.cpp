@@ -29,6 +29,7 @@ private:
 
 void conn::start_server() {
 
+
     server.start_server();
 
 }
@@ -40,7 +41,7 @@ bool conn::get_server_status() {
 
     return server.get_status();
 
-}
+};
 
 
 
@@ -51,9 +52,9 @@ int main() {
 
     boost::asio::io_context context;
 
-    conn open_conn(context, url);
+    conn server(context, url);
 
-    open_conn.start_server();
+    server.start_server();
 
     context.run();
 

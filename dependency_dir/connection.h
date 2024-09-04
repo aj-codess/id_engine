@@ -5,10 +5,14 @@
 #include <string>
 #include <memory>
 
+#include <req_res_handler.h>
+#include <logic.h>
+
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
 #include <boost/coroutine/all.hpp>
 #include <boost/beast.hpp>
+
 
 using namespace std;
 
@@ -20,8 +24,9 @@ struct domain {
 
 
 
-class connections {
+class connections{
 private:
+    req_res_handler handler;
     bool status;
     boost::asio::io_context& ioc;
     domain end_p_details;
@@ -31,7 +36,6 @@ private:
     void start_listener();
     void start_acceptor();
     void r_w_handler(std::shared_ptr<boost::asio::ip::tcp::socket> socket, boost::asio::yield_context yield);
-    void request_handler(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>&  res)
 
 public:
     bool get_status() const {
@@ -109,7 +113,7 @@ void connections::start_acceptor(){
                 cout<<"client connection Acknoledged with ip - "<<socket->remote_endpoint()<<endl;
 
                 boost::asio::spawn(con_acceptor.get_executor(), [this,socket](boost::asio::yield_context yield) {
-
+        
                     r_w_handler(socket, yield);
 
                 });
@@ -139,16 +143,12 @@ void connections::start_acceptor(){
 
 void connections::r_w_handler(std::shared_ptr<boost::asio::ip::tcp::socket> socket, boost::asio::yield_context yield) {
 
+    boost::beast::tcp_stream stream_socket(std::move(*socket));
+
+    for (;;) {
+        bool client_cutOut = false;
+
         try {
-
-            for (;;) {
-
-                // std::size_t length = socket->async_read_some(boost::asio::buffer(data), yield);
-
-                // boost::asio::async_write(*socket, boost::asio::buffer(data, length), yield);
-
-
-            boost::beast::tcp_stream stream_socket(std::move(*socket));
 
             boost::beast::flat_buffer buffer;
 
@@ -156,30 +156,42 @@ void connections::r_w_handler(std::shared_ptr<boost::asio::ip::tcp::socket> sock
 
             boost::beast::http::response<boost::beast::http::string_body> res;
 
-            boost::beast::http::async_read(stream_socket,buffer,req);
+            boost::beast::http::async_read(stream_socket, buffer, req, yield);
 
-            request_handler(req,res);
+            handler.request_handler(req, res);
 
-            boost::beast::http::async_write(stream_socket,res,yield);
+            boost::beast::http::async_write(stream_socket, res, yield);
 
-            stream_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_send);
-3
+            if (req.need_eof()) {
 
-            };
+                boost::beast::error_code shutdown_ec;
+
+                stream_socket.socket().shutdown(boost::asio::ip::tcp::socket::shutdown_send, shutdown_ec);
+
+                client_cutOut = true;
+
+                if (shutdown_ec) {
+
+                    cout << "Error shutting down: " << shutdown_ec.message() << endl;
+
+                }
+
+                break;
+            }
 
         } catch (const std::exception& e) {
 
-            std::cerr <<" Error with session " << e.what() << std::endl;
+            cout<< "Error with session: " << e.what() <<endl;
+
+            break;
 
         }
 
-};
 
+        if (client_cutOut) {
 
+            break;
 
-
-void connection::request_handler(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body> res){
-
-    
-
+        }
+    }
 }

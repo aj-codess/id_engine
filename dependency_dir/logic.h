@@ -22,9 +22,9 @@ class id_schema{
     uint64_t current_space;
     std::vector<uint64_t> unoccupied_space;
     short current_time_id_len;
-} schema;
+};
 
-//update current and unoccupied from dataabase.
+//update current and unoccupied from database.
 
 
 //get the current time as id

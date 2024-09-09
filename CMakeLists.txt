@@ -16,6 +16,9 @@ target_link_libraries(main PUBLIC ${Boost_LIBRARIES} ${Boost_DEPENDENCIES})
 find_package(boost_coroutine REQUIRED CONFIG)
 target_link_libraries(main PUBLIC Boost::coroutine)
 
+find_package(Boost_url REQUIRED CONFIG)
+target_link_libraries(main PUBLIC Boost::url)
+
 find_package(ZLIB REQUIRED)
 target_include_directories(main PUBLIC ${ZLIB_INCLUDE_DIR})
 target_link_libraries(main PUBLIC ${ZLIB_LIBRARIES} ${ZLIB_DEPENDENCIES})

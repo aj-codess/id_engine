@@ -6,6 +6,7 @@
 #include <ctime>
 #include <memory>
 #include <vector>
+#include <mutex>
 
 using namespace std;
 
@@ -22,6 +23,9 @@ class id_schema{
     uint64_t current_space;
     std::vector<uint64_t> unoccupied_space;
     short current_time_id_len;
+
+    private:
+    std::mutex mtx;
 };
 
 //update current and unoccupied from database.
@@ -40,6 +44,7 @@ time_t id_schema::time_id(){
 
     return get_in_milli;
 };
+
 
 
 
@@ -85,6 +90,8 @@ if(user_or_space==false){
 
 string id_schema::generate_id(std::string option,std::string user_id_f_ugc,std::string space_id_f_ugc){
 
+    mtx.lock();
+
     std::unique_ptr<std::string> gen=std::make_unique<std::string>();
 
     if(option=="0"){
@@ -113,7 +120,10 @@ string id_schema::generate_id(std::string option,std::string user_id_f_ugc,std::
 
     };
 
-return *gen;
+    mtx.unlock();
+
+    return *gen;
+
 };
 
 

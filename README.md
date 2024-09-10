@@ -3,10 +3,13 @@ Beryl is an id generating engine made solely made for giving identity to clients
 identity includes relevant information which governs tracking clients and their relative data
 
 paths:
-/beryl/id
-/beryl/del_user_id
-/beryl/del_space_id
+"/beryl/id" - params-> options , user_id , space-id
+"/beryl/persistent_data"
+"/beryl/del_user_id" - params -> user_id , user_pos
+"/beryl/del_space_id" - params -> space_id , space_pos
+"beryl/del_ugc" - params -> user_id , ugc_id
 
+when making a request, query parameters should be based on the above chosen names
 
 ---Task associated with id_schema.h----
 

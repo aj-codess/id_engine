@@ -17,6 +17,7 @@ class jsonScript{
     public:
     nlohmann::json id_2_json(std::string id);
     nlohmann::json convert_persistent(persist data);
+    nlohmann::json delete_bool(bool isDeleted);
 };
 
 
@@ -39,3 +40,15 @@ nlohmann::json jsonScript::convert_persistent(persist data){
 
     return persist_json;
 };
+
+
+
+nlohmann::json jsonScript::delete_bool(bool isDeleted){
+
+    nlohmann::json cast_bool = {
+        {"isDeleted", isDeleted}
+    };
+
+    return cast_bool;
+
+}

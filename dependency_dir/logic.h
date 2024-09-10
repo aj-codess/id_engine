@@ -32,8 +32,9 @@ class id_schema{
 
     public:
     std::string generate_id(std::string option,std::string user_id_f_ugc="0",std::string space_id_f_ugc="0");
-    void del_user(std::string user_id);
-    void del_space(std::string space_id);
+    bool del_user(std::string user_id,std::string user_pos);
+    bool del_space(std::string space_id,std::string space_pos);
+    bool del_ugc(std::string user_id,std::string ugc_id);
     persist get_persistent();
 };
 
@@ -134,19 +135,32 @@ string id_schema::generate_id(std::string option,std::string user_id_f_ugc,std::
 
 
 
-void id_schema::del_user(std::string user_id){
+bool id_schema::del_user(std::string user_id, std::string user_pos){
 
-    this->unoccupied_user.push_back(std::stoull(user_id));
-
+    this->unoccupied_user.push_back(std::stoull(user_pos));
+    //push user_pos to the database persistent dataset using user_id as a condition for extra security
+    //convert user_pos using std::stoull
+    return true;
 };
 
 
-void id_schema::del_space(std::string space_id){
+bool id_schema::del_space(std::string space_id,std::string space_pos){
 
-    this->unoccupied_space.push_back(std::stoull(space_id));
-    
+    this->unoccupied_space.push_back(std::stoull(space_pos));
+    //push space_pos to the database persistent dataset using space_id as a condition for extra security
+    //convert space_pos using std::stoull
+
+    return true;
 };
 
+
+
+bool id_schema::del_ugc(std::string user_id,std::string ugc_id){
+
+//find ugc_id uing user_id as a helper to get the table to deal with
+return true;
+
+};
 
 
 

@@ -70,13 +70,20 @@ void req_res_handler::request_handler(boost::beast::http::request<boost::beast::
 
                 res.result(boost::beast::http::status::ok);
 
-                this->piper.url_2_body_gen(req,data_2_send);
-
-                res.body() = (json.id_2_json(data_2_send)).dump();
+                res.body() = (json.delete_bool(this->piper.global_del(req))).dump();
 
             } else if(this->path_finder(req,"/beryl/del_space_id")){
                 
-                
+                res.result(boost::beast::http::status::ok);
+
+                res.body() = (json.delete_bool(this->piper.global_del(req))).dump();
+
+            } else if(this->path_finder(req,"beryl/del_ugc")){
+
+                res.result(boost::beast::http::status::ok);
+
+                res.body() = (json.delete_bool(this->piper.global_del(req))).dump();
+
             } else{
 
                 res.result(boost::beast::http::status::not_found);

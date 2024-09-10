@@ -22,6 +22,7 @@ class caller{
     public:
     void url_2_body_gen(boost::beast::http::request<boost::beast::http::string_body>& req,std::string& body_2_send);
     persist get_persistent();
+    bool global_del(boost::beast::http::request<boost::beast::http::string_body>& req);
 };
 
 
@@ -59,5 +60,40 @@ std::string caller::cast(boost::urls::params_view::iterator value_2_cast) {
 persist caller::get_persistent(){
 
     return this->generator.get_persistent();
+
+};
+
+
+
+bool caller::global_del(boost::beast::http::request<boost::beast::http::string_body>& req){
+    bool isDeleted;
+
+    boost::urls::url_view url(req.target());
+
+    auto user_id=url.params().find("user_id");
+
+    auto user_pos=url.params().find("user_pos");
+
+    auto space_id=url.params().find("space_id");
+
+    auto space_pos=url.params().find("space_pos");
+
+    auto ugc_id=url.params().find("ugc_id");
+
+    if( user_id != url.params().end() && user_pos != url.params().end()){
+
+        isDeleted=this->generator.del_user(cast(user_id),cast(user_pos));
+
+    } else if(space_id != url.params().end() && space_pos != url.params().end()){
+
+        isDeleted=this->generator.del_space(cast(space_id),cast(space_pos));
+
+    } else if(user_id != url.params().end() && ugc_id != url.params().end()){
+
+        isDeleted=this->generator.del_ugc(cast(user_id),cast(ugc_id));
+
+    };
+
+    return isDeleted;
 
 };

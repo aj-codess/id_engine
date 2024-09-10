@@ -7,6 +7,7 @@
 
 #include <caller.h>
 #include <connection.h>
+#include <jsonScript.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
@@ -18,21 +19,12 @@
 class req_res_handler{
     private:
     caller piper;
-    nlohmann::json make_json(std::string id);
+    jsonScript json;
     bool path_finder(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path);
 
     public:
     void request_handler(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
 };
-
-
-
-nlohmann::json req_res_handler::make_json(std::string id) {
-
-    nlohmann::json cast = { {"id", id} };
-
-    return cast;
-}
 
 
 
@@ -56,8 +48,14 @@ void req_res_handler::request_handler(boost::beast::http::request<boost::beast::
 
                 this->piper.url_2_body_gen(req,data_2_send);
             
-                res.body() = this->make_json(data_2_send).dump();
+                res.body() = (json.id_2_json(data_2_send)).dump();
             
+            } else if(this->path_finder(req,"/beryl/persistent_data")){
+
+                res.result(boost::beast::http::status::ok);
+
+                res.body() = (json.convert_persistent(this->piper.get_persistent())).dump();
+
             } else {
 
                 res.result(boost::beast::http::status::not_found);
@@ -68,11 +66,15 @@ void req_res_handler::request_handler(boost::beast::http::request<boost::beast::
             break;
 
         case boost::beast::http::verb::delete_:
-            if(this->path_finder(req,"/beryl/id/del_user_id")){
+            if(this->path_finder(req,"/beryl/del_user_id")){
 
+                res.result(boost::beast::http::status::ok);
 
+                this->piper.url_2_body_gen(req,data_2_send);
 
-            } else if(this->path_finder(req,"/beryl/id/del_space_id")){
+                res.body() = (json.id_2_json(data_2_send)).dump();
+
+            } else if(this->path_finder(req,"/beryl/del_space_id")){
                 
                 
             } else{

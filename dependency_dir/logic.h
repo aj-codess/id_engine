@@ -10,22 +10,31 @@
 
 using namespace std;
 
+
+struct persist{
+    uint64_t current_user_n;
+    uint64_t current_space_n;
+    short current_time_len;
+};
+
+
 class id_schema{
-    public:
+    private:
     time_t time_id();
     uint64_t user_space_position(bool user_or_space);
-    std::string generate_id(std::string option,std::string user_id_f_ugc="0",std::string space_id_f_ugc="0");
-    void del_user(std::string user_id);
-    void del_space(std::string space_id);
-
     uint64_t current_user;
     std::vector<uint64_t> unoccupied_user;
     uint64_t current_space;
     std::vector<uint64_t> unoccupied_space;
     short current_time_id_len;
 
-    private:
     std::mutex mtx;
+
+    public:
+    std::string generate_id(std::string option,std::string user_id_f_ugc="0",std::string space_id_f_ugc="0");
+    void del_user(std::string user_id);
+    void del_space(std::string space_id);
+    persist get_persistent();
 };
 
 //update current and unoccupied from database.
@@ -90,7 +99,7 @@ if(user_or_space==false){
 
 string id_schema::generate_id(std::string option,std::string user_id_f_ugc,std::string space_id_f_ugc){
 
-    mtx.lock();
+    std::lock_guard<std::mutex> locker(mtx);
 
     std::unique_ptr<std::string> gen=std::make_unique<std::string>();
 
@@ -116,14 +125,11 @@ string id_schema::generate_id(std::string option,std::string user_id_f_ugc,std::
 
     } else{
 
-        *gen=option+std::to_string(this->time_id())+user_id_f_ugc+space_id_f_ugc; //space c;
+        *gen=option+std::to_string(this->time_id())+user_id_f_ugc+space_id_f_ugc; //space chat;
 
     };
 
-    mtx.unlock();
-
     return *gen;
-
 };
 
 
@@ -139,4 +145,23 @@ void id_schema::del_space(std::string space_id){
 
     this->unoccupied_space.push_back(std::stoull(space_id));
     
+};
+
+
+
+
+persist id_schema::get_persistent(){
+
+    std::lock_guard<std::mutex> locker(mtx);
+
+    persist persistent_data;
+
+    persistent_data.current_user_n=this->current_user;
+
+    persistent_data.current_space_n=this->current_space;
+
+    persistent_data.current_time_len=this->current_time_id_len;
+
+    return persistent_data;
+
 };

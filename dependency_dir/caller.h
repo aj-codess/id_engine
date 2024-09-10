@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <logic.h>
+#include <req_res_handler.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
@@ -20,6 +21,7 @@ class caller{
 
     public:
     void url_2_body_gen(boost::beast::http::request<boost::beast::http::string_body>& req,std::string& body_2_send);
+    persist get_persistent();
 };
 
 
@@ -38,7 +40,7 @@ void caller::url_2_body_gen(boost::beast::http::request<boost::beast::http::stri
 
         body_2_send=this->generator.generate_id(cast(option),cast(user_id_f_ugc),cast(space_id_f_ugc));
 
-    };
+    }
 
 };
 
@@ -49,5 +51,13 @@ std::string caller::cast(boost::urls::params_view::iterator value_2_cast) {
     const auto& param = *value_2_cast;  // Dereference to get the key-value pair
 
     return std::string(param.value.data(), param.value.size());  // Convert the value to std::string
+
+};
+
+
+
+persist caller::get_persistent(){
+
+    return this->generator.get_persistent();
 
 };

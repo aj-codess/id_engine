@@ -71,7 +71,6 @@ try{
 } catch(const exception& e){
 
     cout<<"Error making connection - "<<e.what()<<endl;
-    
 
 }
 

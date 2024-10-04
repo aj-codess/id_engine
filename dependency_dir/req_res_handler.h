@@ -13,6 +13,7 @@
 #include <boost/asio/spawn.hpp>
 #include <boost/coroutine/all.hpp>
 #include <boost/beast.hpp>
+#include <boost/url.hpp>
 #include <nlohmann/json.hpp>
 
 
@@ -35,9 +36,9 @@ void req_res_handler::request_handler(boost::beast::http::request<boost::beast::
 
     res.version(req.version());
     
-    res.set(boost::beast::http::field::server, "Beast");
+    res.set(boost::beast::http::field::server, "Beryl ID Server");
 
-    res.set(boost::beast::http::field::content_type, "text/html");
+    res.set(boost::beast::http::field::content_type, "application/json");
 
     switch (req.method()) {
 

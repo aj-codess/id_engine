@@ -138,8 +138,6 @@ void connections::start_acceptor(){
 
 
 
-
-
 void connections::r_w_handler(std::shared_ptr<boost::asio::ip::tcp::socket> socket, boost::asio::yield_context yield) {
 
     boost::beast::tcp_stream stream_socket(std::move(*socket));
@@ -161,7 +159,7 @@ void connections::r_w_handler(std::shared_ptr<boost::asio::ip::tcp::socket> sock
 
             boost::beast::http::async_write(stream_socket, res, yield);
 
-            if (req.need_eof()) {
+            if (res.need_eof()) {
 
                 boost::beast::error_code shutdown_ec;
 
@@ -173,7 +171,7 @@ void connections::r_w_handler(std::shared_ptr<boost::asio::ip::tcp::socket> sock
 
                     cout << "Error shutting down: " << shutdown_ec.message() << endl;
 
-                }
+                };
 
                 break;
             }

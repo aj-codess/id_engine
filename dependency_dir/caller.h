@@ -41,7 +41,7 @@ void caller::url_2_body_gen(boost::beast::http::request<boost::beast::http::stri
 
         body_2_send=this->generator.generate_id(cast(option),cast(user_id_f_ugc),cast(space_id_f_ugc));
 
-    }
+    };
 
 };
 
@@ -68,17 +68,17 @@ persist caller::get_persistent(){
 bool caller::global_del(boost::beast::http::request<boost::beast::http::string_body>& req){
     bool isDeleted;
 
-    boost::urls::url_view url(req.target());
+    nlohmann::json json_body=req.body();
 
-    auto user_id=url.params().find("user_id");
+    auto user_id=json_body.find("user_id");
 
-    auto user_pos=url.params().find("user_pos");
+    auto user_pos=json_body.find("user_pos");
 
-    auto space_id=url.params().find("space_id");
+    auto space_id=json_body.find("space_id");
 
-    auto space_pos=url.params().find("space_pos");
+    auto space_pos=json_body.find("space_pos");
 
-    auto ugc_id=url.params().find("ugc_id");
+    auto ugc_id=json_body.find("ugc_id");
 
     if( user_id != url.params().end() && user_pos != url.params().end()){
 

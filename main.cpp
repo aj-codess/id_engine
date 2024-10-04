@@ -5,6 +5,12 @@
 #include <boost/asio.hpp>
 #include <connection.h>
 
+#include <boost/asio.hpp>
+#include <boost/asio/spawn.hpp>
+#include <boost/coroutine/all.hpp>
+#include <boost/beast.hpp>
+#include <nlohmann/json.hpp>
+
 using namespace std;
 
 class conn {

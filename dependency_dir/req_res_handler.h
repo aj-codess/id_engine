@@ -63,7 +63,8 @@ void req_res_handler::request_handler(boost::beast::http::request<boost::beast::
             
                 res.body() = "The resource was not found.";
             
-            }
+            };
+            
             break;
 
         case boost::beast::http::verb::delete_:
@@ -91,7 +92,9 @@ void req_res_handler::request_handler(boost::beast::http::request<boost::beast::
             
                 res.body() = "The resource was not found.";
 
-            }
+            };
+
+            break;
 
         default:
             res.result(boost::beast::http::status::bad_request);

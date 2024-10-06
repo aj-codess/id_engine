@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <thread>
 #include <chrono>
 #include <ctime>
 #include <memory>
@@ -140,6 +141,7 @@ bool id_schema::del_user(std::string user_id, std::string user_pos){
     this->unoccupied_user.push_back(std::stoull(user_pos));
     //push user_pos to the database persistent dataset using user_id as a condition for extra security
     //convert user_pos using std::stoull
+
     return true;
 };
 

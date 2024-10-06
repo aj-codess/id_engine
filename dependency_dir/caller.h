@@ -12,12 +12,14 @@
 #include <boost/coroutine/all.hpp>
 #include <boost/beast.hpp>
 #include <boost/url.hpp>
+#include <nlohmann/json.hpp>
 
 
 class caller{
     private:
     id_schema generator;
     std::string cast(boost::urls::params_view::iterator value_2_cast);
+    std::string string_cast(nlohmann::json value);
 
     public:
     void url_2_body_gen(boost::beast::http::request<boost::beast::http::string_body>& req,std::string& body_2_send);
@@ -68,7 +70,7 @@ persist caller::get_persistent(){
 bool caller::global_del(boost::beast::http::request<boost::beast::http::string_body>& req){
     bool isDeleted;
 
-    nlohmann::json json_body=req.body();
+    nlohmann::json json_body=nlohmann::json::parse(req.body());
 
     auto user_id=json_body.find("user_id");
 
@@ -80,20 +82,38 @@ bool caller::global_del(boost::beast::http::request<boost::beast::http::string_b
 
     auto ugc_id=json_body.find("ugc_id");
 
-    if( user_id != url.params().end() && user_pos != url.params().end()){
+    if( user_id != json_body.end() && user_pos != json_body.end()){
+        
+        isDeleted=this->generator.del_user(string_cast(json_body["user_id"]),string_cast(json_body["user_pos"]));
 
-        isDeleted=this->generator.del_user(cast(user_id),cast(user_pos));
+    } else if(space_id != json_body.end() && space_pos != json_body.end()){
 
-    } else if(space_id != url.params().end() && space_pos != url.params().end()){
+        isDeleted=this->generator.del_space(string_cast(json_body["space_id"]),string_cast(json_body["space_pos"]));
 
-        isDeleted=this->generator.del_space(cast(space_id),cast(space_pos));
+    } else if(user_id != json_body.end() && ugc_id != json_body.end()){
 
-    } else if(user_id != url.params().end() && ugc_id != url.params().end()){
-
-        isDeleted=this->generator.del_ugc(cast(user_id),cast(ugc_id));
+        isDeleted=this->generator.del_ugc(string_cast(json_body["user_id"]),string_cast(json_body["ugc_id"]));
 
     };
 
     return isDeleted;
 
+};
+
+
+
+std::string caller::string_cast(nlohmann::json value){
+    std::string cast;
+
+    try{
+
+        cast=value.get<std::string>();
+
+    } catch(const std::exception& e){
+
+        cout<<"unable to cast data - "<<e.what()<<endl;
+
+    };
+
+    return cast;
 };

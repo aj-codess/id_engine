@@ -42,7 +42,7 @@ public:
 
         return this->status;
 
-    }
+    };
 
     void start_server();
 
@@ -51,7 +51,7 @@ public:
 
         cout << "ready with socket connection handler...." << endl;
 
-    }
+    };
 
 };
 
@@ -182,13 +182,13 @@ void connections::r_w_handler(std::shared_ptr<boost::asio::ip::tcp::socket> sock
 
             break;
 
-        }
+        };
 
 
         if (client_cutOut) {
 
             break;
 
-        }
+        };
     }
 }

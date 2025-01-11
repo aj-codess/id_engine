@@ -60,7 +60,7 @@ public:
 void connections::start_server() {
 
 try{
-
+ 
         boost::asio::ip::tcp::resolver::results_type endpoints = endpoint_resolver.resolve(end_p_details.host_url, end_p_details.port);
 
         server_endpoint = *endpoints.begin();

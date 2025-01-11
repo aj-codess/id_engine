@@ -19,12 +19,12 @@
 
 class req_res_handler{
     private:
-    caller piper;
-    jsonScript json;
-    bool path_finder(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path);
+        caller piper;
+        jsonScript json;
+        bool path_finder(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path);
 
     public:
-    void request_handler(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
+        void request_handler(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
 };
 
 

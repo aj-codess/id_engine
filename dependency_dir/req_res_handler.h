@@ -8,6 +8,8 @@
 #include <caller.h>
 #include <connection.h>
 #include <jsonScript.h>
+#include <auth.h>
+#include <url_dep.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
@@ -19,6 +21,8 @@
 
 class req_res_handler{
     private:
+        auth_middleware middle_verify;
+        url _dep url;
         caller piper;
         jsonScript json;
         bool path_finder(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path);
@@ -40,7 +44,11 @@ void req_res_handler::request_handler(boost::beast::http::request<boost::beast::
 
     res.set(boost::beast::http::field::content_type, "application/json");
 
-    switch (req.method()) {
+    if(!middle_verify.entry(req)){
+        return;
+    };
+
+    switch(req.method()) {
 
         case boost::beast::http::verb::get:
             if (this->path_finder(req,"/beryl/id")){
@@ -108,15 +116,4 @@ void req_res_handler::request_handler(boost::beast::http::request<boost::beast::
 
     res.prepare_payload();  // Prepare the payload before sending the response
 
-};
-
-
-
-bool req_res_handler::path_finder(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path_condition){
-    
-    boost::urls::url_view url(req.target());
-
-    std::string url_path=std::string(url.encoded_path());
-
-    return (url_path==path_condition);
 };

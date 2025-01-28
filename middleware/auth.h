@@ -38,7 +38,7 @@ bool auth_middleware::entry(boost::beast::http::request<boost::beast::http::stri
 
             std::string token = auth_value.substr(prefix.size());
 
-            
+            bool token_isValid=
             
         };
 

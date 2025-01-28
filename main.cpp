@@ -1,8 +1,11 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <fstream>
 
 #include <connection.h>
+#include <hash_module.h>
+#include <compressor_module.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
@@ -25,6 +28,8 @@ public:
 
 private:
     connections server;
+    hasher_class hasher;
+    shrink_operands shrink;
 };
 
 
@@ -32,6 +37,30 @@ private:
 
 void conn::start_server() {
 
+     auto env_writter=[&](){
+
+            std::ofstream path(ENV);
+
+            if (path.is_open()){
+
+                try{
+
+                    std::string gen=hasher.hash(this->shrink.compress(GLOBAL));
+
+                    path<<gen<<endl;
+
+                    path.close();
+
+                } catch(const std::exception e){
+
+                    cout<<"unable to write env - "<<e.what()<<endl;
+
+                };
+
+            };
+        };
+
+        env_writter();
 
     server.start_server();
 

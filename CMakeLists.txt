@@ -43,3 +43,12 @@ target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:mongo::bsoncxx_static>,m
 find_package(mongocxx CONFIG REQUIRED)
 target_include_directories(main PUBLIC ${mongocxx_INCLUDE_DIR})
 target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:mongo::mongocxx_static>,mongo::mongocxx_static,mongo::mongocxx_shared>)
+
+
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../vcpkg/installed/x64-linux/include/jwt-cpp)
+
+set(GLOBAL "GenuTech->Beryl_id_engine")
+set(ENV_PATH "./assets/env.txt")
+
+target_compile_definitions(main PRIVATE GLOBAL="${GLOBAL}")
+target_compile_definitions(main PRIVATE ENV="${ENV_PATH}")

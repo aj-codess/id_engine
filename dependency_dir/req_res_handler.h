@@ -22,7 +22,7 @@
 class req_res_handler{
     private:
         auth_middleware middle_verify;
-        url _dep url;
+        url_dep url;
         caller piper;
         jsonScript json;
         bool path_finder(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path);

@@ -12,8 +12,8 @@ using namespace std;
 class get_router{
     public:
     get_router()=default;
-    void route_controller()
+    void route_controller();
 
     private:
 
-}
+};

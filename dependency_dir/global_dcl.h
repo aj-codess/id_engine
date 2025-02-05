@@ -2,32 +2,19 @@
 
 #include <iostream>
 #include <string>
-#include <map>
-#include <memory>
 
 using namespace std;
 
-struct session_data{
-    std::string server_name,last_signed;
-};
-
-
-class server_session{
-    public:
-    server_session()=default;
-    bool isInSession(std::string id);
-
+class global_dcl{
     private:
-    map<std::string,session_data> session_container;
+    const std::string server_name="BERYL_ENGINE";
+
+    public:
+    global_dcl()=default;
+    std::string get_server_name();
 };
 
 
-bool server_session::isInSession(std::string id){
-
-    for(const auto& [key,value] : session_container){
-
-        
-
-    };
-
+std::string global_dcl::get_server_name(){
+    return this->server_name;
 };

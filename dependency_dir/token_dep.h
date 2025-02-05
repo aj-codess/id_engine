@@ -8,7 +8,7 @@
 #include <jwt-cpp/jwt.h>
 
 
-#include <global_dcl.h>
+#include <session_manager.h>
 
 using namespace std;
 
@@ -23,7 +23,7 @@ class token_dep{
 };
 
 
-bool token_validity(std::string token,std::function<void(std::string)> callback){
+bool token_dep::token_validity(std::string token,std::function<void(std::string)> callback){
 
      bool isValid=false;
 
@@ -48,10 +48,15 @@ bool token_validity(std::string token,std::function<void(std::string)> callback)
         if(callback){
 
             if(this->session.isInSession(tokenGen_server_id)==true){
+
                 callback(tokenGen_server_id);
-                isValid=true
+
+                isValid=true;
+
             } else {
+
                 isValid=false;
+
             };
             
         };
@@ -71,11 +76,13 @@ bool token_validity(std::string token,std::function<void(std::string)> callback)
 
 
 
-std::string token_signer(std::string id){
+std::string token_dep::token_signer(std::string id){
 
-     std::string token;
+    try{
 
-    auto env_read=[&](std::function<void(std::string)> callback) {
+        std::string token;
+
+        auto env_read=[&](std::function<void(std::string)> callback) {
 
         std::ifstream file("./../assets/env.txt");
 
@@ -99,6 +106,15 @@ std::string token_signer(std::string id){
 
     });
 
+    
+
     return token;
+
+
+    } catch(const std::exception& e){
+
+        std::cout << "Token signing failed: " << e.what() << std::endl;
+
+    };
 
 };

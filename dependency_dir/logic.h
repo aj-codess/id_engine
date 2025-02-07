@@ -21,6 +21,7 @@ struct persist{
 
 class id_schema{
     private:
+    id_schema()=default;
     time_t time_id();
     uint64_t user_space_position(bool user_or_space);
     uint64_t current_user;

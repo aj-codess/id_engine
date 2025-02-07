@@ -21,6 +21,7 @@ class timer{
     public:
     timer()=default;
     std::string gen_id(std::function<void(time_t)> callback);
+    time_t get_timeOnly();
 };
 
 
@@ -55,3 +56,8 @@ time_t timer::now_time(){
 };
 
 
+time_t timer::get_timeOnly(){
+
+    return this->now_time();
+
+};

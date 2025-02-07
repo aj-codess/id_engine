@@ -47,7 +47,7 @@ bool token_dep::token_validity(std::string token,std::function<void(std::string)
 
         if(callback){
 
-            if(this->session.isInSession(tokenGen_server_id)==true){
+            if(this->session.isInSession(tokenGen_server_id)==true && this->session.check_expiry(tokenGen_server_id)==false){
 
                 callback(tokenGen_server_id);
 

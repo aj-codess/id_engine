@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <global_dcl.h>
+#include <timer.h>
 
 using namespace std;
 
@@ -20,12 +21,15 @@ class server_session{
     server_session()=default;
     bool isInSession(std::string id);
     bool create_session(std::string id,std::string name,time_t time);
-    bool update_session(std::string id);
+    bool update_session(std::string id,std::string new_id,time_t assigned_time);
     bool name_check(std::string id,std::string server_name);
+    bool check_expiry(std::string id);
 
     private:
     map<std::string,session_data> session_container;
     global_dcl global;
+    timer pulse;
+    void session_delete(std::string id);
 };
 
 
@@ -49,7 +53,9 @@ bool server_session::isInSession(std::string id){
     for(const auto& [key,value] : session_container){
 
         if(id.find(this->global.get_server_name()) !=std::string::npos && key==id){
+
             return true;
+
         };
 
     };
@@ -87,19 +93,29 @@ bool server_session::create_session(std::string id,std::string name,time_t time)
 
 
 
-bool server_session::update_session(std::string id){
+bool server_session::update_session(std::string id,std::string new_id,time_t assigned_time){
 
     try{
 
         if(this->isInSession(id)==true){
 
-            //find out how to update session and generating new token
+                this->session_container[id].last_signed=assigned_time;
+
+                auto it=this->session_container.find(id);
+
+                this->session_container[new_id]=it->second;
+
+                this->session_delete(id);
+
+                if(this->isInSession(id)==false){
+                    return true;
+                };
 
         } else{
 
             return false;
 
-        }
+        };
 
     } catch(const std::exception& e){
 
@@ -108,5 +124,28 @@ bool server_session::update_session(std::string id){
         return false;
 
     };
+
+};
+
+
+
+void server_session::session_delete(std::string id){
+
+    this->session_container.erase(id);
+
+}
+
+
+bool server_session::check_expiry(std::string id){
+
+    auto it=this->session_container.find(id);
+
+    if((this->pulse.get_timeOnly() - it->second.last_signed) >= 300000){
+
+        return true;
+
+    };
+
+    return false;
 
 };

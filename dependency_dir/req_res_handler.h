@@ -11,6 +11,8 @@
 #include <auth.h>
 #include <url_dep.h>
 
+#include <getter_routes.h>
+
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
 #include <boost/coroutine/all.hpp>
@@ -21,11 +23,8 @@
 
 class req_res_handler{
     private:
+        getter_router getter;
         auth_middleware middle_verify;
-        url_dep url;
-        caller piper;
-        jsonScript json;
-        bool path_finder(boost::beast::http::request<boost::beast::http::string_body>& req,std::string path);
 
     public:
         void request_handler(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
@@ -44,37 +43,18 @@ void req_res_handler::request_handler(boost::beast::http::request<boost::beast::
 
     res.set(boost::beast::http::field::content_type, "application/json");
 
-    if(!middle_verify.entry(req)){
+    if(!middle_verify.entry(req,res)){
         return;
     };
 
     switch(req.method()) {
 
         case boost::beast::http::verb::get:
-            if (this->path_finder(req,"/beryl/id")){
-            
-                res.result(boost::beast::http::status::ok);
 
-                this->piper.url_2_body_gen(req,data_2_send);
-            
-                res.body() = (json.id_2_json(data_2_send)).dump();
-            
-            } else if(this->path_finder(req,"/beryl/persistent_data")){
-
-                res.result(boost::beast::http::status::ok);
-
-                res.body() = (json.convert_persistent(this->piper.get_persistent())).dump();
-
-            } else {
-
-                res.result(boost::beast::http::status::not_found);
-            
-                res.body() = "The resource was not found.";
-            
-            };
+            this->getter.route_controller(req,res);
             
             break;
-
+///write a router for the rest of the methods
         case boost::beast::http::verb::delete_:
             if(this->path_finder(req,"/beryl/del_user_id")){
 

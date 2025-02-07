@@ -25,6 +25,7 @@ class auth_middleware{
     server_session session;
     token_dep token_handler;
     timer pulse;
+    bool update_controller(std::string id,std::function<void(std::string,std::string)> callback);
 };
 
 
@@ -56,6 +57,32 @@ bool auth_middleware::entry(boost::beast::http::request<boost::beast::http::stri
                 req.set("id",id);
 
                 return true;
+
+            } else{
+
+                std::string token;
+
+                std::string new_id;
+
+                bool isUpdated=this->update_controller(id,[&](std::string jwt_token,std::string new_id_){
+
+                    token=jwt_token;
+
+                    new_id=new_id_;
+
+                });
+
+                if(isUpdated){
+
+                    res.set(boost::beast::http::field::authorization,"Bearer "+token);
+
+                    req.set("id",new_id);
+
+                    return true;
+
+                };
+
+                return false;
 
             };
             
@@ -90,5 +117,28 @@ bool auth_middleware::entry(boost::beast::http::request<boost::beast::http::stri
         return false;
 
     };
+
+};
+
+
+
+
+bool auth_middleware::update_controller(std::string id,std::function<void(std::string,std::string)> callback){
+
+    time_t assigned_time;
+
+    std::string new_id=this->pulse.gen_id([&](time_t assigned_time_){
+
+        assigned_time=assigned_time_;
+
+    });
+
+    if(callback){
+
+        callback(this->token_handler.token_signer(new_id),new_id);
+
+    };
+
+    return this->session.update_session(id,new_id,assigned_time);
 
 };

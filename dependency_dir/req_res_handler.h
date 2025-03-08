@@ -23,7 +23,7 @@
 
 class req_res_handler{
     private:
-        getter_router getter;
+        get_router getter;
         auth_middleware middle_verify;
 
     public:

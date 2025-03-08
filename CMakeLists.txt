@@ -11,6 +11,7 @@ target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/core)
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/dependency_dir)
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/middleware)
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/controller)
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/routes)
 
 find_package(Boost)
 target_include_directories(main PUBLIC ${Boost_INCLUDE_DIR})

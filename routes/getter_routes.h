@@ -6,7 +6,7 @@
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 
-#include <url_dep>
+#include <url_dep.h>
 #include <get_id_controller.h>
 #include <persistent_controller.h>
 
@@ -42,7 +42,7 @@ void get_router::route_controller(boost::beast::http::request<boost::beast::http
 
     } else if(this->url.path_finder(req,"/beryl/persistent_data")){
         
-        this->persistent_getter(res);
+        this->persistent_getter.payload(res);
     
     } else{
 

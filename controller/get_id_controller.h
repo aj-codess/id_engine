@@ -22,7 +22,7 @@ class getId_controller{
     std::string cast(boost::urls::params_view::iterator value_2_cast);
 
     public:
-    void get_indi_id(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res)
+    void get_indi_id(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
 };
 
 
@@ -63,7 +63,7 @@ void getId_controller::get_indi_id(boost::beast::http::request<boost::beast::htt
 
     this->url_2_body_gen(req,payload);
 
-    res.body()=(json.id_2_json(data_2_send)).dump();
+    res.body()=(json.id_2_json(payload)).dump();
 
     res.result(boost::beast::http::status::ok);
 };

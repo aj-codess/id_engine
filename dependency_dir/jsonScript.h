@@ -13,8 +13,8 @@
 class jsonScript{
     private:
 
-
     public:
+    jsonScript()=default;
     nlohmann::json id_2_json(std::string id);
     nlohmann::json convert_persistent(persist data);
     nlohmann::json delete_bool(bool isDeleted);

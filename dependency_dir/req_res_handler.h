@@ -5,37 +5,38 @@
 
 #include <memory>
 
-#include <caller.h>
 #include <connection.h>
-#include <jsonScript.h>
 #include <auth.h>
-#include <url_dep.h>
+
 
 #include <getter_routes.h>
+#include <deleter_routes.h>
 
 #include <boost/asio.hpp>
 #include <boost/asio/spawn.hpp>
 #include <boost/coroutine/all.hpp>
 #include <boost/beast.hpp>
-#include <boost/url.hpp>
 #include <nlohmann/json.hpp>
 
 
 class req_res_handler{
+    public:
+        req_res_handler()=default;
+        void request_handler(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
+
+
     private:
         get_router getter;
+        delete_routes delete_;
         auth_middleware middle_verify;
+        url_dep url;
 
-    public:
-        void request_handler(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res);
-};
+    };
 
 
 
 
 void req_res_handler::request_handler(boost::beast::http::request<boost::beast::http::string_body>& req,boost::beast::http::response<boost::beast::http::string_body>& res){
-
-    std::string data_2_send;
 
     res.version(req.version());
     
@@ -51,36 +52,13 @@ void req_res_handler::request_handler(boost::beast::http::request<boost::beast::
 
         case boost::beast::http::verb::get:
 
-            this->getter.route_controller(req,res);
+            this->getter.route(req,res);
             
             break;
-///write a router for the rest of the methods
+
         case boost::beast::http::verb::delete_:
-            if(this->path_finder(req,"/beryl/del_user_id")){
 
-                res.result(boost::beast::http::status::ok);
-
-                res.body() = (json.delete_bool(this->piper.global_del(req))).dump();
-
-            } else if(this->path_finder(req,"/beryl/del_space_id")){
-                
-                res.result(boost::beast::http::status::ok);
-
-                res.body() = (json.delete_bool(this->piper.global_del(req))).dump();
-
-            } else if(this->path_finder(req,"beryl/del_ugc")){
-
-                res.result(boost::beast::http::status::ok);
-
-                res.body() = (json.delete_bool(this->piper.global_del(req))).dump();
-
-            } else{
-
-                res.result(boost::beast::http::status::not_found);
-            
-                res.body() = "The resource was not found.";
-
-            };
+            this->delete_.route(req,res);
 
             break;
 
